@@ -5,7 +5,18 @@ class window.Hand extends Backbone.Collection
   initialize: (array, @deck, @isDealer) ->
 
   hit: ->
-    @add(@deck.pop()).last()
+    #get next last card from deck
+    @add @deck.pop()
+    nextCard = @.last()
+    if nextCard.get('rankName') isnt 'Ace'
+      nextCard
+    else
+      #@.ace()
+      nextCard
+
+
+   ##@add(@deck.pop()).last()
+   
 
   scores: ->
     # The scores are an array of potential scores.
@@ -17,4 +28,16 @@ class window.Hand extends Backbone.Collection
     score = @reduce (score, card) ->
       score + if card.get 'revealed' then card.get 'value' else 0
     , 0
-    if hasAce then [score, score + 10] else [score]
+    #if hasAce then [score, score + 10] else [score]
+    #if hasAce then decrement score and run ace(score)
+    if hasAce
+      @ace(score)  
+      [score-1]
+    else
+      [score]
+      #@.ace(score)
+
+
+  ace: (scoreWithoutAce) ->
+    #will only execute if on a hit, an ace is the nextCard
+    console.log "score is #{ scoreWithoutAce }"
