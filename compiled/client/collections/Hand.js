@@ -18,14 +18,7 @@
     };
 
     Hand.prototype.hit = function() {
-      var nextCard;
-      this.add(this.deck.pop());
-      nextCard = this.last();
-      if (nextCard.get('rankName') !== 'Ace') {
-        return nextCard;
-      } else {
-        return nextCard;
-      }
+      return this.add(this.deck.pop()).last();
     };
 
     Hand.prototype.scores = function() {
@@ -36,16 +29,59 @@
       score = this.reduce(function(score, card) {
         return score + (card.get('revealed') ? card.get('value') : 0);
       }, 0);
-      if (hasAce) {
-        this.ace(score);
-        return [score - 1];
-      } else {
+      if (score > 21) {
+        this.trigger('busted');
         return [score];
+      } else {
+        if (hasAce) {
+          if (score + 11 > 21) {
+            return [score];
+          } else {
+            return [score + 10];
+          }
+        } else {
+          return [score];
+        }
       }
     };
 
-    Hand.prototype.ace = function(scoreWithoutAce) {
-      return console.log("score is " + scoreWithoutAce);
+    Hand.prototype.stand = function() {
+      return this.trigger('stand');
+    };
+
+    Hand.prototype.dealPlay = function(playerScore) {
+      var dealerScore;
+      if (!this.at(0).get('revealed')) {
+        this.at(0).flip();
+      }
+      dealerScore = this.scores();
+      console.log(dealerScore);
+      console.log(playerScore);
+      if (dealerScore[0] < 17 && dealerScore[0] < playerScore[0]) {
+        this.hit();
+        this.dealPlay(playerScore);
+      }
+      if (dealerScore[0] >= 17 && dealerScore[0] < playerScore[0]) {
+        this.hit();
+        this.dealPlay(playerScore);
+      }
+      if (dealerScore[0] >= 17 && dealerScore[0] < 21 && dealerScore[0] > playerScore[0]) {
+        this.trigger('dealerWin');
+      }
+      if (dealerScore[0] > 21) {
+        this.trigger('dealerBust');
+      }
+      if (dealerScore[0] === 21) {
+        if (dealerScore[0] > playerScore[0]) {
+          this.trigger('dealerWin');
+        }
+        if (dealerScore[0] === playerScore[0]) {
+          this.trigger('tie');
+        }
+      }
+      if (dealerScore[0] === playerScore[0]) {
+        return this.trigger('tie');
+      }
     };
 
     return Hand;

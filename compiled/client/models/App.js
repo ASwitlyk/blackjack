@@ -14,7 +14,38 @@
       var deck;
       this.set('deck', deck = new Deck());
       this.set('playerHand', deck.dealPlayer());
-      return this.set('dealerHand', deck.dealDealer());
+      this.set('dealerHand', deck.dealDealer());
+      this.get('playerHand').on('busted', (function(_this) {
+        return function() {
+          alert('you lose!!');
+          return _this.set('playerHand', deck.dealPlayer());
+        };
+      })(this));
+      this.get('playerHand').on('stand', (function(_this) {
+        return function() {
+          return _this.get('dealerHand').dealPlay(_this.get('playerHand').scores());
+        };
+      })(this));
+      this.get('dealerHand').on('dealerBust', (function(_this) {
+        return function() {
+          return alert('you win!!');
+        };
+      })(this));
+      this.get('dealerHand').on('dealerWin', (function(_this) {
+        return function() {
+          return alert('you loser you loser!!!');
+        };
+      })(this));
+      this.get('dealerHand').on('tie', (function(_this) {
+        return function() {
+          return alert('we tied but house always wins, pay me!!');
+        };
+      })(this));
+      return this.get('dealerHand').on('reveal', (function(_this) {
+        return function() {
+          return _this.set('revealed', true);
+        };
+      })(this));
     };
 
     return App;

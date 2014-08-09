@@ -2,6 +2,14 @@ assert = chai.assert
 
 describe 'blackJack', ->
 
+	deck = null
+	hand = null
+
+	beforeEach ->
+		deck = new Deck()
+		hand = new Hand()
+
+
 ###
 Create a new deck
 create two hands, 

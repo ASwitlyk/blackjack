@@ -4,7 +4,15 @@
 
   assert = chai.assert;
 
-  describe('blackJack', function() {});
+  describe('blackJack', function() {
+    var deck, hand;
+    deck = null;
+    hand = null;
+    return beforeEach(function() {
+      deck = new Deck();
+      return hand = new Hand();
+    });
+  });
 
 
   /*
